@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import TodoContainer from './TodoContainer/TodoContainer'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state={
+    todos: [
+      {id: 0, title:"Do Project", content:"Fast", complete: false},
+      {id: 1, title:"Pay Bills", content:"Please", complete: false},
+      {id: 2, title:"Buy Lamp", content:"For Month", complete: true}
+    ]
+  }
+
+  addItem = (type, item) => {
+    const newItem = {...item, id:Date.now()}
+    const newState = [...this.state[type], newItem]
+    this.setState({[type]: newState})
+    console.log()
+  }
+
+  deleteItem = (type, id) => {
+    const newState = this.state[type].filter((object) => object.id !== id)
+    this.setState({[type]: newState})
+  }
+
+  editItem = (type, item) => {
+    const newState = this.state[type].filter((object) => object.id !== item.id)
+    this.setState({[type]: [...newState, item]})
+  }
+
+  markComplete = (type, id) => {
+    const newState = this.state[type].filter((object) => object.id !== id)
+    let item = this.state[type].filter((object) => object.id === id)
+    let itemUpdate = {...item[0], complete: !item[0].complete}
+    this.setState({[type]: [...newState, itemUpdate]})
+  }
+
+
+  render() {
+    const {todos} = this.state
+    return (
+      <div className="App">
+      <TodoContainer todos={todos} addItem={this.addItem} deleteItem={this.deleteItem} editItem={this.editItem} markComplete={this.markComplete}/>
+      </div>
+    );
+  }
 }
 
 export default App;
